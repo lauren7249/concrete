@@ -12,8 +12,6 @@ from boto.s3.key import Key
 import multiprocessing
 from constants import GLOBAL_HEADERS
 import dateutil
-from pipl_request import PiplRequest
-from person_request import PersonRequest
 from saved_request import S3SavedRequest
 
 reload(sys) 

@@ -9,7 +9,7 @@ import requests
 from requests import HTTPError
 from boto.s3.key import Key
 import datetime
-from service import Service, S3SavedRequest
+from service import Service
 from constants import GLOBAL_HEADERS
 from helpers.linkedin_helpers import get_dob_year_range
 
@@ -38,11 +38,9 @@ class AgeService(Service):
         super(AgeService, self).__init__(data, *args, **kwargs)
         self.wrapper = wrapper
 
-class AgeRequest(S3SavedRequest):
+class AgeRequest(object):
 
-    name = "age_request"
     def __init__(self):
-        super(AgeRequest, self).__init__()
         self.logger = logging.getLogger(__name__)
         self.dob_year_range = None
 

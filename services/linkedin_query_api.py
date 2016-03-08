@@ -2,7 +2,7 @@ import psycopg2
 import psycopg2.extras
 import web
 import json
-from prime.utils.crawlera import reformat_crawlera
+from utils.crawlera import reformat_crawlera
 
 web.config.debug = False
 urls = (

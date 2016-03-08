@@ -1,8 +1,8 @@
 import boto, re
 from boto.s3.key import Key
 import json
-from prime.utils.crawlera import reformat_crawlera
-from prime.processing_service.helper import name_match
+from utils.crawlera import reformat_crawlera
+from processing_service.helper import name_match
 import happybase
 
 def load_by_linkedin_id(line):

@@ -3,7 +3,7 @@ import re
 import numpy
 from helpers.stringhelpers import uu, name_match
 from helpers.linkedin_helpers import get_dob_year_range
-from prime.utils.crawlera import reformat_crawlera
+from utils.crawlera import reformat_crawlera
 
 '''
 flatmap functions return a list of key, value pairs. this list gets flattened to an rdd of key, value pairs when flatmap is called

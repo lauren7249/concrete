@@ -3,7 +3,7 @@ from helpers.stringhelpers import name_match
 from helpers.linkedin_helpers import get_dob_year_range
 from prime.utils.crawlera import reformat_crawlera
 import numpy, json, re
-from prime.processing_service.geocode_service import GeocodeRequest, GeoPoint, MapQuestRequest
+from processing_service.geocode_service import GeocodeRequest, GeoPoint, MapQuestRequest
 import happybase
 from prime.processing_service.pipl_request import PiplRequest
 from prime.processing_service.lead_service import LeadService

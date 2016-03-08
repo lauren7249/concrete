@@ -6,8 +6,6 @@ import boto
 import json
 import lxml.html
 from boto.s3.key import Key
-import unittest
-from flask.ext.testing import TestCase, LiveServerTestCase
 from requests import session
 from geopy.geocoders import Nominatim
 from service import Service, S3SavedRequest

@@ -50,11 +50,11 @@ def reformat_jobs(jobs):
         experiences.append(experience)    
     return experiences
 
-def reformat_crawlera(json):
-    if not json or not linkedin_data.keys():
+def reformat_crawlera(linkedin_data):
+    if not linkedin_data or not linkedin_data.keys():
         return {}
     for key in linkedin_data.keys():
-        if json[key] is None: linkedin_data.pop(key)
+        if linkedin_data[key] is None: linkedin_data.pop(key)
     schools = reformat_schools(linkedin_data.get("education",[]))
     experiences = reformat_jobs(linkedin_data.get("experience",[]))
     groups = []

@@ -1,5 +1,7 @@
 import re
 import json
+from processing_service.geocode_service import GeocodeRequest
+from processing_service.age_service import AgeRequest
 
 def reformat_schools(educations):
     schools = []
@@ -79,7 +81,14 @@ def reformat_crawlera(json):
                 project["end_date"] = dates[0].strip()
         projects.append(project)
     causes = json.get("volunteering",[{}])[0].get("causes")
-    return {
+    num_connections = json.get("num_connections","0")
+    try:
+        connections = int(num_connections)
+    except:
+        connections = 0  
+    location_raw = json.get("locality")
+    geocode = GeocodeRequest(location_raw).process()          
+    linkedin_data =  {
         'image': json.get("image_url"),
         'linkedin_id': json.get("linkedin_id"),
         'full_name': json.get("full_name"),
@@ -88,7 +97,7 @@ def reformat_crawlera(json):
         'experiences': experiences,
         'skills': json.get("skills"),
         'people': json.get("also_viewed"),
-        'connections': json.get("num_connections"),
+        'connections': connections,
         'location': json.get("locality"),
         'industry': json.get("industry"),
         "groups": groups,
@@ -112,8 +121,13 @@ def reformat_crawlera(json):
         "publications": json.get("publications"),
         "recommendations": json.get("recommendations"),
         "volunteering": json.get("volunteering"),
-        "patents": json.get("patents")
+        "patents": json.get("patents"),
+        "geocode": geocode
     }
+    req = AgeRequest()
+    age = req._get_age(linkedin_data)
+    linkedin_data["age"] = age
+    return linkedin_data
 
 def test_refactor():
     sample_data_path = "/Users/lauren/Documents/arachnid/prime/tests/fixtures/crawlera_sample.jsonl"

@@ -51,21 +51,21 @@ def reformat_jobs(jobs):
     return experiences
 
 def reformat_crawlera(json):
-    if not json or not json.keys():
+    if not json or not linkedin_data.keys():
         return {}
-    for key in json.keys():
-        if json[key] is None: json.pop(key)
-    schools = reformat_schools(json.get("education",[]))
-    experiences = reformat_jobs(json.get("experience",[]))
+    for key in linkedin_data.keys():
+        if json[key] is None: linkedin_data.pop(key)
+    schools = reformat_schools(linkedin_data.get("education",[]))
+    experiences = reformat_jobs(linkedin_data.get("experience",[]))
     groups = []
-    for group in json.get("groups",[]):
+    for group in linkedin_data.get("groups",[]):
         if group.get("profile_url") and group.get("profile_url").split("=")[-1].isdigit():
             group["group_id"] = group.get("profile_url").split("=")[-1]
         group["group_url"] = group.pop("profile_url",None)
         group["image_url"] = group.pop("logo_url",None)
         groups.append(group)
     projects = []
-    for p in json.get("projects",[]):
+    for p in linkedin_data.get("projects",[]):
         project = {}
         project["description"] = p.get("description")
         project["title"] = p.get("title")
@@ -80,48 +80,48 @@ def reformat_crawlera(json):
                 project["start_date"] = dates[0].strip()
                 project["end_date"] = dates[0].strip()
         projects.append(project)
-    causes = json.get("volunteering",[{}])[0].get("causes")
-    num_connections = json.get("num_connections","0")
+    causes = linkedin_data.get("volunteering",[{}])[0].get("causes")
+    num_connections = linkedin_data.get("num_connections","0")
     try:
         connections = int(num_connections)
     except:
         connections = 0  
-    location_raw = json.get("locality")
+    location_raw = linkedin_data.get("locality")
     geocode = GeocodeRequest(location_raw).process()          
     linkedin_data =  {
-        'image': json.get("image_url"),
-        'linkedin_id': json.get("linkedin_id"),
-        'full_name': json.get("full_name"),
-        'headline': json.get("headline"),
+        'image': linkedin_data.get("image_url"),
+        'linkedin_id': linkedin_data.get("linkedin_id"),
+        'full_name': linkedin_data.get("full_name"),
+        'headline': linkedin_data.get("headline"),
         'schools': schools,
         'experiences': experiences,
-        'skills': json.get("skills"),
-        'people': json.get("also_viewed"),
+        'skills': linkedin_data.get("skills"),
+        'people': linkedin_data.get("also_viewed"),
         'connections': connections,
-        'location': json.get("locality"),
-        'industry': json.get("industry"),
+        'location': linkedin_data.get("locality"),
+        'industry': linkedin_data.get("industry"),
         "groups": groups,
         "projects": projects,
-        "urls":json.get("also_viewed"),
-        "interests": json.get("interests"),
+        "urls":linkedin_data.get("also_viewed"),
+        "interests": linkedin_data.get("interests"),
         "causes":causes,
-        "organizations":json.get("organizations"),
-        "source_url": json.get("url"),
-        "family_name": json.get("family_name"),
-        "given_name": json.get("given_name"),
-        "updated": json.get("updated"),
-        "_key": json.get("_key"),
-        "websites": json.get("websites"),
-        "canonical_url": json.get("canonical_url"),
-        "courses": json.get("courses"),
-        "languages": json.get("languages"),
-        "summary": json.get("summary"),
-        "certifications": json.get("certifications"),
-        "honors_awards": json.get("honors_awards"),
-        "publications": json.get("publications"),
-        "recommendations": json.get("recommendations"),
-        "volunteering": json.get("volunteering"),
-        "patents": json.get("patents"),
+        "organizations":linkedin_data.get("organizations"),
+        "source_url": linkedin_data.get("url"),
+        "family_name": linkedin_data.get("family_name"),
+        "given_name": linkedin_data.get("given_name"),
+        "updated": linkedin_data.get("updated"),
+        "_key": linkedin_data.get("_key"),
+        "websites": linkedin_data.get("websites"),
+        "canonical_url": linkedin_data.get("canonical_url"),
+        "courses": linkedin_data.get("courses"),
+        "languages": linkedin_data.get("languages"),
+        "summary": linkedin_data.get("summary"),
+        "certifications": linkedin_data.get("certifications"),
+        "honors_awards": linkedin_data.get("honors_awards"),
+        "publications": linkedin_data.get("publications"),
+        "recommendations": linkedin_data.get("recommendations"),
+        "volunteering": linkedin_data.get("volunteering"),
+        "patents": linkedin_data.get("patents"),
         "geocode": geocode
     }
     req = AgeRequest()
@@ -133,7 +133,7 @@ def test_refactor():
     sample_data_path = "/Users/lauren/Documents/arachnid/prime/tests/fixtures/crawlera_sample.jsonl"
     f = open(sample_data_path,"r")
     lines = f.readlines()
-    j = [json.loads(line) for line in lines]
+    j = [linkedin_data.loads(line) for line in lines]
     keynames = set()
     for rec in j:
         ref = reformat_crawlera(rec)
@@ -145,7 +145,7 @@ def test_refactor():
     sample_data_path = "/Users/lauren/Documents/arachnid/prime/tests/fixtures/crawlera_sample_companies.jsonl"
     f = open(sample_data_path,"r")
     lines = f.readlines()
-    j = [json.loads(line) for line in lines]
+    j = [linkedin_data.loads(line) for line in lines]
     keynames = set()
     for rec in j:
         keynames.update(rec.keys())
@@ -156,7 +156,7 @@ def test_refactor():
     sample_data_path = "/Users/lauren/Documents/arachnid/prime/tests/fixtures/crawlera_sample_schools.jsonl"
     f = open(sample_data_path,"r")
     lines = f.readlines()
-    j = [json.loads(line) for line in lines]
+    j = [linkedin_data.loads(line) for line in lines]
     keynames = set()
     for rec in j:
         keynames.update(rec.keys())

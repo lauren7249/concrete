@@ -83,7 +83,7 @@ def reformat_crawlera(linkedin_data):
     causes = linkedin_data.get("volunteering",[{}])[0].get("causes")
     num_connections = linkedin_data.get("num_connections","0")
     try:
-        connections = int(num_connections)
+        connections = int(num_connections.replace("+",""))
     except:
         connections = 0  
     location_raw = linkedin_data.get("locality")

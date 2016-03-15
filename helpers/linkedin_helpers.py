@@ -1,5 +1,6 @@
 import logging
 import sys
+import re
 import datetime
 from helpers.stringhelpers import uu, name_match, random_string, csv_line_to_list
 from helpers.data_helpers import merge_by_key
@@ -246,3 +247,45 @@ def process_csv(csv):
         contact["job_title"] = line[job_title_index].decode('latin-1')
         data.append({"contact":contact, "contacts_owner":None, "service":"LinkedIn"})
     return data    
+
+def is_college(school):
+    #it's a high school so lets move on
+    if school.get("college") and school.get("college","").lower().find("high school") > -1:
+        return False
+    #definitely a college degree if it's a bachelors
+    if school.get("degree_type"):
+        degree = school.get("degree_type")
+    elif school.get("degree"):
+        degree = school.get("degree")
+    else:
+        degree = None
+    if degree is not None:
+        clean_degree = re.sub('[^0-9a-z\s]','',degree.lower().strip())
+        if re.search('^bs($|\s)', clean_degree) or re.search('^ba($|\s)', clean_degree) or re.search('^ab($|\s)', clean_degree) or re.search('^bachelor[s]*($|\s)', clean_degree):
+            return True
+    #looks like a college or university. you need to be a college of some kind to have a college ID. proof: philips exeter academy does not have one. they only have a company page
+    college = school.get("college") if school.get("college") else ""
+    if school.get("college_linkedin_url") or college.lower().find('university')>-1 or college.lower().find('college')>-1:
+        return True    
+    return False
+
+def duration(school):
+    start_date = parse_date(school.get("start_date"))
+    end_date = parse_date(school.get("end_date"))
+    if end_date and start_date:
+        return end_date.year - start_date.year
+    return None
+
+def main_school(linkedin_data):
+    schools = linkedin_data.get("schools")
+    if not schools:
+        return None
+    colleges = filter(lambda x:is_college(x) == True, schools)
+    if not colleges:
+        return None
+    colleges_4yr = filter(lambda x:duration(x) >= 4, colleges)
+    if colleges_4yr:
+        return sorted(colleges_4yr, key=lambda x:parse_date(x.get("end_date")))[0]
+    return sorted(colleges, key=lambda x:parse_date(x.get("end_date")) if parse_date(x.get("start_date")) else parse_date("Jan 1"), reverse=True)[0]
+
+

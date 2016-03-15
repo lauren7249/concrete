@@ -47,3 +47,14 @@ def filter_matches(rec):
 filtered = joined.flatMap(filter_matches).cache()
 filtered.saveAsPickleFile("s3a://" + AWS_KEY + ":" + AWS_SECRET + "@advisorconnect-test/touchpoints_joined_filtered.pickle")
 filtered.count()
+
+counts = filtered.countByKey()
+
+from processing_service.person_request import PersonRequest
+from processing_service.helper import is_college
+
+def format_output(rec):
+    data = rec[1]
+    tp_data = data[0]
+    linkedin_data = data[1]
+    current_job = PersonRequest()._current_job_linkedin(linkedin_data)

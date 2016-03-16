@@ -45,12 +45,24 @@ def format_output(rec):
     if linkedin_data.get("organizations"):
         # print "organizations"
         # print linkedin_data.get("organizations")
-        tp_data['TouchPoints Organizations'] = uu(", ".join([org.get("name") for org in linkedin_data.get("organizations")]).replace('\n',' '))    
+        tp_data['TouchPoints Organizations'] = uu(", ".join([org.get("name") for org in linkedin_data.get("organizations")]).replace('\n',' '))   
+    for col in ["TouchPoints Employer", "TouchPoints Job Title", "TouchPoints Industry", "TouchPoints Employer Start", "TouchPoints Employer End", "TouchPoints School", "TouchPoints Degree and Major", "TouchPoints School Start", "TouchPoints School End", "TouchPoints Interests", "TouchPoints Causes", "TouchPoints Organizations"]:
+        if not tp_data.get(col):
+            tp_data[col] = ''
     tp_data["single_match"] = (match_count == 1)
     return tp_data
 
 formatted = filtered.map(format_output).cache()
 fdf = formatted.toDF()
 fdf = fdf.drop("zip")
+fdf = fdf.drop("tp_lat")
+fdf = fdf.drop("tp_lng")
 fdf = fdf.fillna('')
-fdf.describe()
+fdf_pandas = fdf.toPandas()
+fdf_pandas.fillna('',inplace=True)
+fdf_pandas.to_csv("New System Test Output.csv", encoding='utf-8', index=None)
+
+import tinys3
+conn = tinys3.Connection(AWS_KEY, AWS_SECRET, tls=True)
+f = open("New System Test Output.csv",'rb')
+conn.upload("New System Test Output.csv",f,'advisorconnect-test')

@@ -286,6 +286,6 @@ def main_school(linkedin_data):
     colleges_4yr = filter(lambda x:duration(x) >= 4, colleges)
     if colleges_4yr:
         return sorted(colleges_4yr, key=lambda x:parse_date(x.get("end_date")))[0]
-    return sorted(colleges, key=lambda x:parse_date(x.get("end_date")) if parse_date(x.get("start_date")) else parse_date("Jan 1"), reverse=True)[0]
+    return sorted(colleges, key=lambda x:parse_date(x.get("end_date")) if parse_date(x.get("end_date")) else parse_date("Jan 1, 1900"), reverse=True)[0]
 
 

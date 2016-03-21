@@ -50,6 +50,7 @@ def format_output(rec):
         if not tp_data.get(col):
             tp_data[col] = ''
     tp_data["single_match"] = (match_count == 1)
+    tp_data["url"] = linkedin_data.get("source_url")
     return tp_data
 
 formatted = filtered.map(format_output).cache()

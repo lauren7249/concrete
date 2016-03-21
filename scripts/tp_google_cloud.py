@@ -1,6 +1,6 @@
 
 # coding: utf-8
-
+#PYSPARK_DRIVER_PYTHON=ipython pyspark
 # In[85]:
 #only works as root
 from setuptools.command import easy_install

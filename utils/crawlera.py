@@ -1,7 +1,5 @@
 import re
 import json
-from processing_service.geocode_service import GeocodeRequest
-from processing_service.age_service import AgeRequest
 
 def reformat_schools(educations):
     schools = []
@@ -86,8 +84,7 @@ def reformat_crawlera(linkedin_data):
         connections = int(num_connections.replace("+",""))
     except:
         connections = 0  
-    location_raw = linkedin_data.get("locality")
-    geocode = GeocodeRequest(location_raw).process()          
+    location_raw = linkedin_data.get("locality")     
     linkedin_data =  {
         'image': linkedin_data.get("image_url"),
         'linkedin_id': linkedin_data.get("linkedin_id"),
@@ -124,9 +121,6 @@ def reformat_crawlera(linkedin_data):
         "patents": linkedin_data.get("patents"),
         "geocode": geocode
     }
-    req = AgeRequest()
-    age = req._get_age(linkedin_data)
-    linkedin_data["age"] = age
     return linkedin_data
 
 def test_refactor():

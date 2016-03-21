@@ -1,0 +1,3 @@
+
+hive -e "CREATE INDEX index_url ON TABLE people(url) AS 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' WITH DEFERRED REBUILD;"
+hive -e "alter index index_url on people rebuild;"

@@ -29,27 +29,27 @@ class HBaseLoader(object):
         self.conf = {"mapreduce.outputformat.class": self.table_output_format,  
                     "mapreduce.job.output.key.class": self.key_class,  
                      "mapreduce.job.output.value.class": self.value_class}
-'''
-needed to add
-spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
-spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
+        '''
+        needed to add
+        spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
+        spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
 
-spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
-spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
-spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
-spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
-spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
-spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
-spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar       
-spark.driver.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
-spark.executor.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
-to /etc/spark/conf.dist/spark-defaults.conf
-'''
+        spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
+        spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
+        spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
+        spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
+        spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
+        spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+        spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar       
+        spark.driver.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
+        spark.executor.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
+        to /etc/spark/conf.dist/spark-defaults.conf
+        '''
 
     def get_s3_data(self):
         self.keys = self.S3_BUCKET.list("linkedin/people/" + self.PERIOD + "/")

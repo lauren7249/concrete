@@ -3,8 +3,8 @@ from boto.s3.key import Key
 import happybase
 import gzip
 import StringIO
-from flatmappers import *
-from foldbykey import *
+from spark.flatmappers import *
+from spark.foldbykey import *
 
 class HBaseLoader(object):
 
@@ -29,6 +29,27 @@ class HBaseLoader(object):
         self.conf = {"mapreduce.outputformat.class": self.table_output_format,  
                     "mapreduce.job.output.key.class": self.key_class,  
                      "mapreduce.job.output.value.class": self.value_class}
+'''
+needed to add
+spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
+spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.5.0-cdh5.5.1-hadoop2.6.0-cdh5.5.1.jar
+
+spark.driver.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
+spark.executor.extraClassPath /usr/lib/spark/lib/spark-examples-1.6.0-hadoop2.7.2.jar
+spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-common-1.1.2.jar
+spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-client-1.1.2.jar
+spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-protocol-1.1.2.jar
+spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+spark.driver.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/hbase-server-1.1.2.jar       
+spark.driver.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
+spark.executor.extraClassPath /usr/lib/hbase/lib/guava-12.0.1.jar
+to /etc/spark/conf.dist/spark-defaults.conf
+'''
 
     def get_s3_data(self):
         self.keys = self.S3_BUCKET.list("linkedin/people/" + self.PERIOD + "/")
@@ -82,9 +103,12 @@ class HBaseLoader(object):
     #     return rdd
 
 if __name__=="__main__":
+    sc.addPyFile("../prime.zip")
+    from spark.hbase_load_simple import HBaseLoader
     hb = HBaseLoader("2015_12", sc) 
-    hb.load_people_table()   
     hb.get_s3_data()
+    hb.load_linkedin_id_xwalk()
+    hb.load_people_table()   
     connection = happybase.Connection('172.17.0.2')
     data_table = connection.table('people')      
     data_table.row('11207608')

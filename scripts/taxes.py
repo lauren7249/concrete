@@ -4,6 +4,7 @@ year = '2015'
 import requests
 from os import listdir
 import re
+import pickle
 from dateutil.parser import parse
 folder = "/Users/lauren/Documents/accounting/personaltaxes{}/".format(year)
 filenames = listdir(folder)
@@ -23,6 +24,26 @@ pickle.dump(csvs, open('taxes_csvs.pickle','wb'))
 
 #csvs = pickle.load(open('taxes_csvs.pickle','rb'))
 
+def clean_description(description):
+    description = description.replace(",",'').strip()
+    description = re.sub('[^A-Z\s]','', description.upper()).strip()
+    if description.find('NYC TAXI') == 0 or description.find('NYCTAXI') == 0:
+        description = 'NYC TAXI'
+    if description.find('DROPBOX') == 0:
+        description = 'DROPBOX'    
+    if description.find('LYFT') == 0:
+        description = 'LYFT'          
+    if description.find('MTA') == 0:
+        description = 'MTA'             
+    if description.find('SEAMLSS') == 0:
+        description = 'SEAMLESS'             
+    if description.find('STARBUCKS') == 0:
+        description = 'STARBUCKS'              
+    return description
+
+import xlsxwriter
+workbook  = xlsxwriter.Workbook('/Users/lauren/Documents/accounting/personaltaxes{}_items.xlsx'.format(year))
+worksheet = workbook.add_worksheet()
 purchases = []
 for period, csv in csvs.iteritems():
     month = int(period[4:])
@@ -69,7 +90,7 @@ for period, csv in csvs.iteritems():
             if month == 12 and purchase_month == 1:
                 continue
             purchase_date = "/".join(purchase_date.split("/")[:2]) + "/" + year
-            purchases.append([purchase_date, description.replace(",",'').strip(), amount])
+            purchases.append([purchase_date, clean_description(description), amount])
             last_debit_date = debit_date
         except Exception, e:
             print str(e)
@@ -78,21 +99,17 @@ for period, csv in csvs.iteritems():
             import pdb
             pdb.set_trace()
 
-def clean_description(description):
-    description = re.sub('[^A-Z\s]','', purchase[1].upper()).strip()
-    if description.find('NYC TAXI') == 0 or description.find('NYCTAXI') == 0:
-        description = 'NYC TAXI'
-    if description.find('DROPBOX') == 0:
-        description = 'DROPBOX'    
-    if description.find('LYFT') == 0:
-        description = 'LYFT'          
-    if description.find('MTA') == 0:
-        description = 'MTA'             
-    if description.find('SEAMLSS') == 0:
-        description = 'SEAMLESS'             
-    if description.find('STARBUCKS') == 0:
-        description = 'STARBUCKS'              
-    return description
+def writerow(worksheet, rownum, row):
+    for i in xrange(0, len(row)):
+        worksheet.write(rownum, i, row[i])
+
+header = ["Date", "description","amount"]
+rownum =0
+writerow(worksheet, rownum, header)
+for i in xrange(0, len(purchases)):
+    writerow(worksheet, i+1, purchases[i])
+
+workbook.close()
 
 tot = 0.0
 from collections import defaultdict
